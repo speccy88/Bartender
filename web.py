@@ -7,6 +7,8 @@ import os
 app = Flask(__name__)
 
 code_list = ["00255091",
+             "00012195",
+             "00005215",
              "00268714",
              "00323972",
              "00117101",
@@ -15,12 +17,28 @@ code_list = ["00255091",
 
 @app.route("/")
 def Index():
+    pass
+    return render_template("index.html")
+
+@app.route("/list")
+def List():
     bottles = []
     for code in code_list:
         bottles.append(Bottle(code))
-        
-    return render_template("index.html", bottles=bottles)
+    return render_template("list.html", bottles=bottles)    
 
+@app.route("/api/valve")
+def _valve():
+    print "valve"
+    print request.args["val"]
+    return  ""
+
+@app.route("/api/move")
+def _move():
+    print "move"
+    print request.args["val"]
+    return  ""
+    
 @app.route("/api/test")
 def _test():
     data = request.args

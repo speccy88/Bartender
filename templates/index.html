@@ -8,26 +8,64 @@
 </head>
 
 <style>
-h3, h4 {text-align: center;}
-span {font-weight: bold;}
+p, h3, h4, h5 {text-align: center;}
 </style>
 
-<div data-role="page" data-theme="a">
-  <div data-role="header">
-    <div><h3>Liste des produits SAQ</h3></div>
-  </div>
+<script>
+$(document).ready(function()
+{     
+    $('#valve').change( function() {
+    $.get("/api/valve",
+          {
+            val:$('#valve').val()
+          });            
+    });
+ 
+    $('#fwd').bind( "click", function() {
+    $.get("/api/move", 
+          {
+            val:$('#move-control-group').val()
+          });           
+    }); 
+});
+</script>
 
-  <div data-role="content">
-        {% for bottle in bottles %}
-        <h5>{{ bottle.nameUnicode }}</h5>
-        <p>Prix: {{ bottle.price }}</p>
-        <p>Degré d'alcool: {{ bottle.percent }}</p>
-        <p>Code SAQ: {{ bottle.code_saq }}</p>
-        <br>
-        <img id="PIC{{ bottle.code_saq }}" src="{{ bottle.image_url }}" alt="PIC{{ bottle.code_saq }}" width="150" height="150">
-        {% endfor %}
-  </div>
+<div data-role="page" data-theme="a">
+<div data-role="header">
+<h3>Bartender alpha</h3>
+<a href="#" class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-gear">Options</a>
+</div>
   
+<br>
+  
+<div class="ui-body ui-body-a ui-corner-all">
+<h3>Mode manuel</h3>
+<label for="move-control-group">Moteur</label>
+<div data-role="controlgroup" data-type="horizontal">
+    <input type="text" id="move-control-group" style="width:50px;height:10px;" data-wrapper-class="controlgroup-textinput ui-btn">
+    <a href="#" style="height:35px;" id="fwd" class="ui-btn ui-btn-inline ui-icon-forward ui-btn-icon-notext">Horaire</a>
+    <a href="#" style="height:35px;" id="rev" class="ui-btn ui-btn-inline ui-icon-back ui-btn-icon-notext">Anti-Horaire</a>
+</div>
+
+<br>
+
+<label for="flip-1">Valve</label>
+<select name="flip-1" id="valve" data-role="slider">
+	<option value="off">Off</option>
+	<option value="on">On</option>
+</select>   
+</div>
+
+<br>
+
+<div class="ui-body ui-body-a ui-corner-all">
+<h3>Mode auto</h3>
+<p>test</p>
+</div>
+
+<a href="#" class="ui-btn ui-icon-carat-r ui-btn-icon-right">Drinks</a>
+<a href="/list" rel="external" class="ui-btn ui-icon-carat-r ui-btn-icon-right">Example de liste de produits</a>
+
 </div>
 
 </html>

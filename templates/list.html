@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<head>
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<meta charset="UTF-8">
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+</head>
+
+<style>
+p, h3, h4, h5 {text-align: center;}
+img {
+display: block;
+margin-left: auto;
+margin-right: auto;
+margin-bottom: 20px;
+}
+
+span {font-weight: bold;}
+.bottle {
+width: 300px;
+border: 2px solid black;
+margin-left: 20px;
+margin-bottom: 20px;
+//float: left;
+}
+</style>
+
+<div data-role="page" data-theme="a">
+  <div data-role="header">
+    <div><h3>Liste des produits SAQ</h3></div>
+  </div>
+
+  <div data-role="content">
+        {% for bottle in bottles %}
+        <div class="bottle">
+        <h5>{{ bottle.nameUnicode }}</h5>
+        <p>Prix: {{ bottle.price }}</p>
+        <p>Degré d'alcool: {{ bottle.percent }}</p>
+        <p>Code SAQ: {{ bottle.code_saq }}</p>
+        <br>
+        <img id="PIC{{ bottle.code_saq }}" src="{{ bottle.image_url }}" alt="PIC{{ bottle.code_saq }}" width="150" height="150">
+        </div>
+        {% endfor %}
+  </div>
+  
+</div>
+
+</html>
