@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script src="http://cdn.jsdelivr.net/sockjs/0.3/sockjs.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script>
+    $(function() {
+      var conn = null;
+
+      function log(msg) {
+        var control = $('#log');
+        control.html(control.html() + msg + '<br/>');
+        control.scrollTop(control.scrollTop() + 1000);
+      }
+
+      function connect() {
+        disconnect();
+
+        var transports = $('#protocols input:checked').map(function(){
+            return $(this).attr('id');
+        }).get();
+
+        conn = new SockJS('http://' + window.location.host + '/chat', transports);
+
+        log('Connecting...');
+
+        conn.onopen = function() {
+          log('Connected.');
+          update_ui();
+        };
+
+        conn.onmessage = function(e) {
+          log('Received: ' + e.data);
+        };
+
+        conn.onclose = function() {
+          log('Disconnected.');
+          conn = null;
+          update_ui();
+        };
+      }
+
+      function disconnect() {
+        if (conn != null) {
+          log('Disconnecting...');
+
+          conn.close();
+          conn = null;
+
+          update_ui();
+        }
+      }
+
+      function update_ui() {
+        var msg = '';
+
+        if (conn == null || conn.readyState != SockJS.OPEN) {
+          $('#status').text('disconnected');
+          $('#connect').text('Connect');
+        } else {
+          $('#status').text('connected (' + conn.protocol + ')');
+          $('#connect').text('Disconnect');
+        }
+      }
+
+      $('#connect').click(function() {
+        if (conn == null) {
+          connect();
+        } else {
+          disconnect();
+        }
+
+        update_ui();
+        return false;
+      });
+
+      $('form').submit(function() {
+        var text = $('#text').val();
+        log('Sending: ' + text);
+        conn.send(text);
+        $('#text').val('').focus();
+        return false;
+      });
+    });
+</script>
+
+<style>
+.no-link {cursor: default !important;font-weight: normal !important;background-color: white !important;}
+</style>
+</head>
+
+<body>
+{% block page %}{% end %}
+</body>
+
+</html>

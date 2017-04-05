@@ -1,8 +1,9 @@
-import urllib, cStringIO
+import urllib
 from lxml import html
 import requests
-from PIL import Image
+#from PIL import Image
 import re
+import io
 
 class Bottle():
     def __init__(self, code_saq=None, url=None, to_file=False):
@@ -48,8 +49,8 @@ class Bottle():
         # get the product picture
         image_url_raw = self.tree.xpath('//*[@id="content"]/div[2]/div/div[2]/div[2]/div[1]/div[2]')[0].text_content()
         self.image_url = "http:"+re.search(r'src="(//s7d9.*)" alt', image_url_raw).group(1)    
-        image_file = cStringIO.StringIO(urllib.urlopen(self.image_url).read())
-        self.image = Image.open(image_file)
+        self.image_file = io.StringIO(urllib.urlopen(self.image_url).read())
+        #self.image = Image.open(image_file)
         #self.image.save("static/"self.code_saq+".png", "PNG")
         #self.image.show()
         
@@ -66,4 +67,4 @@ if __name__=="__main__":
                "10757154"]          
 
     for code in code_list:
-        print Bottle(code)
+        print(Bottle(code))
