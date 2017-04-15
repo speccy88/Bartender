@@ -3,42 +3,34 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+    <link rel="stylesheet" type="text/css" href="jquery.mobile-1.4.5.min.css">
     <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
     <script src="http://cdn.jsdelivr.net/sockjs/0.3/sockjs.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
     <script>
     $(function() {
       var conn = null;
-
-      function log(msg) {
-        var control = $('#log');
-        control.html(control.html() + msg + '<br/>');
-        control.scrollTop(control.scrollTop() + 1000);
-      }
-
+       
       function connect() {
         disconnect();
 
-        var transports = $('#protocols input:checked').map(function(){
-            return $(this).attr('id');
-        }).get();
+        link = 'http://' + window.location.host + '/viewer'
+        console.log(link)
+        conn = new SockJS(link);
 
-        conn = new SockJS('http://' + window.location.host + '/chat', transports);
-
-        log('Connecting...');
+        console.log('Connecting...');
 
         conn.onopen = function() {
-          log('Connected.');
+          console.log('Connected.');
           update_ui();
         };
 
         conn.onmessage = function(e) {
-          log('Received: ' + e.data);
+          console.log('Received: ' + e.data);
         };
 
         conn.onclose = function() {
-          log('Disconnected.');
+          console.log('Disconnected.');
           conn = null;
           update_ui();
         };
@@ -46,7 +38,7 @@
 
       function disconnect() {
         if (conn != null) {
-          log('Disconnecting...');
+          console.log('Disconnecting...');
 
           conn.close();
           conn = null;
@@ -67,24 +59,29 @@
         }
       }
 
-      $('#connect').click(function() {
-        if (conn == null) {
-          connect();
-        } else {
-          disconnect();
-        }
-
-        update_ui();
-        return false;
+      $('.add').click(function() {
+        console.log("add");
+        id = $(this).attr("data-id");
+        name = $(this);
+        quantity = $("#slider"+id).val();
+        console.log("ID:"+id);
+        console.log("QTY:"+quantity);
+        console.log("NAME:"+name);
+        
+        
+        conn.send("allo");
+        
       });
 
       $('form').submit(function() {
         var text = $('#text').val();
-        log('Sending: ' + text);
+        console.log('Sending: ' + text);
         conn.send(text);
         $('#text').val('').focus();
         return false;
       });
+	  
+	connect();
     });
 </script>
 

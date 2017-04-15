@@ -2,13 +2,14 @@
 import tornado.autoreload
 import tornado.ioloop
 import tornado.web
+import data
 
 import sockjs.tornado
 
 
 class ViewerHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render('viewer.html')
+        self.render('viewer.html', drinks=data.drinks)
 
 class AdminHandler(tornado.web.RequestHandler):
     def get(self):
@@ -20,11 +21,11 @@ class ViewerConnection(sockjs.tornado.SockJSConnection):
     participants = set()
 
     def on_open(self, info):
-        # Send that someone joined
-        self.broadcast(self.participants, "Someone joined.")
+        print("New client connection")
 
         # Add client to the clients list
         self.participants.add(self)
+        self.broadcast(self.participants, "fuck")
 
     def on_message(self, message):
         # Broadcast message
@@ -33,9 +34,8 @@ class ViewerConnection(sockjs.tornado.SockJSConnection):
     def on_close(self):
         # Remove client from the clients list and broadcast leave message
         self.participants.remove(self)
-
-        self.broadcast(self.participants, "Someone left.")
-
+        print("disconnected")
+		
 if __name__ == "__main__":
     import logging
     logging.getLogger().setLevel(logging.DEBUG)
@@ -52,7 +52,6 @@ if __name__ == "__main__":
     app.listen(8080, "0.0.0.0")
 
     # 4. Start IOLoop
-    print("test")
 
     tornado.autoreload.start()
     tornado.autoreload.watch('viewer.html')

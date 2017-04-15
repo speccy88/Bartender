@@ -1,15 +1,18 @@
 {% extends "base.html" %}
 
+
+
+
 {% block page %}
 <!-- Start of first page -->
-<div data-role="page" data-theme="a" id="foo">
+<div data-role="page" data-theme="a" id="current_drink_list">
 
 	<div data-role="header">
-		<h1>Foo</h1>
+		<h1>Liste des coktails/shooter en préparation</h1>
         <div data-role="navbar">
         <ul>
-            <li><a href="#foo" class="ui-btn-active ui-state-persist">One <span class="ui-li-count">12</span></a></li>
-            <li><a href="#bar">Two</a></li>
+            <li><a href="#current_drink_list" class="ui-btn-active ui-state-persist">En cours <span class="ui-li-count">0</span></a></li>
+            <li><a href="#drink_list">Liste des drinks</a></li>
         </ul>
         </div><!-- /navbar -->
 
@@ -26,61 +29,58 @@
 	</div><!-- /content -->
 
 	<div data-role="footer">
-		<h4>Page Footer</h4>
+		<h4>Dolbeau Oxygène 2017</h4>
 	</div><!-- /footer -->
 </div><!-- /page -->
 
 <!-- Start of second page -->
-<div data-role="page" id="bar">
+<div data-role="page" id="drink_list">
 
 	<div data-role="header">
-		<h1>Bar23</h1>
+		<h1>Liste des coktails/shooter disponibles</h1>
         <div data-role="navbar">
         <ul>
-        <li><a href="#foo" >One <span class="ui-li-count">0</span></a></li>
-         <li><a href="#bar"  class="ui-btn-active ui-state-persist">Two</a></li>
+            <li><a href="#current_drink_list">En cours <span class="ui-li-count">0</span></a></li>
+            <li><a href="#drink_list" class="ui-btn-active ui-state-persist">Liste des drinks</a></li>
         </ul>
         </div><!-- /navbar -->
+
 	</div><!-- /header -->
 
 	<div role="main" class="ui-content">
-	<ul data-role="listview" data-filter="true" data-filter-placeholder="Search tests" data-inset="true">
-    <li><a href="#popupMenu1" data-rel="popup" data-transition="pop">TEST1</a></li>
-    <li><a href="#popupMenu2">TEST2</a></li>
-    <li><a href="#popupMenu3">TEST3</a></li>
-    <li><a href="#popupMenu4">TEST4</a></li>
-    <li><a href="#popupMenu5">TEST5</a></li>
-    <li><a href="#popupMenu6">TEST6</a></li>
-    </ul>
+	<ul data-role="listview" data-filter="true" data-filter-placeholder="Rechercher un cocktail/shooter" data-inset="true">
+	
+	{% for i, drink in enumerate(drinks) %}
+	<li><a href="#popupMenu{{ i }}" data-rel="popup" data-transition="pop">{{ drink[0] }}</a></li>
+	{% end %}
+	</ul>
 	</div><!-- /content -->
 
 	<div data-role="footer">
-		<h4>Page Footer</h4>
+		<h4>Dolbeau Oxygène 2017</h4>
 	</div><!-- /footer -->
     
-    
-    <div data-role="popup" id="popupMenu1" data-dismissible="false" data-theme="b">
+	{% for i, drink in enumerate(drinks) %}
+    <div data-role="popup" id="popupMenu{{ i }}" data-dismissible="false" data-theme="b">
     <div data-role="header">
-    <h3>Bar23</h3>
+    <h3>{{ drink[0] }}</h3>
     </div>
 	<div role="main" class="ui-content">
-            <ul data-role="listview" style="min-width:210px;" >
-    <li>item (1x)</li>
-    <li>item (1x)</li>
-    <li>item (3x)</li>
-    <li>item (1x)</li>
-    <li>item (2x)</li>
+    <ul data-role="listview" style="min-width:210px;" >
+    {% for content in drink[1] %}
+		<li>{{ content[0] }} ({{ content[1] }}x)</li>
+	{% end %}
     </ul>
     <br><br>
     <form>
-    <label for="slider">Quantity:</label>
-    <input tabindex="-1" type="range" name="slider" id="slider" value="1" min="1" max="6">
-    <a tabindex="-1" href="#" data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-icon-plus ui-btn-icon-right">Add</a>
+    <label for="slider{{ i }}">Quantity:</label>
+    <input tabindex="-1" type="range" name="slider" id="slider{{ i }}" value="1" min="1" max="6">
+    <a data-id="{{ i }}" tabindex="-1" href="#" data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-icon-plus ui-btn-icon-right add">Add</a>
     </form>
     </div>
+    </div>	{% end %}
     
-    
-    </div>
+
 </div><!-- /page -->
 
 </div>
